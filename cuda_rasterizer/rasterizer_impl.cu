@@ -305,6 +305,9 @@ int CudaRasterizer::Rasterizer::forward(
 	char* binning_chunkptr = binningBuffer(binning_chunk_size);
 	BinningState binningState = BinningState::fromChunk(binning_chunkptr, num_rendered);
 
+	cudaMemset(binningState.point_list_keys_unsorted, 0, sizeof(uint64_t) * num_rendered);
+	cudaMemset(binningState.point_list_unsorted, 0, sizeof(uint32_t) * num_rendered);
+
 	// For each instance to be rendered, produce adequate [ tile | depth ] key 
 	// and corresponding dublicated Gaussian indices to be sorted
 	duplicateWithKeys << <(P + 255) / 256, 256 >> > (
